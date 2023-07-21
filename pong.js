@@ -53,7 +53,7 @@ const listPaddle = [leftPaddle, rightPaddle];
 const startBall = new ball(BALL_X, BALL_Y, BALL_RADIUS, BALL_VEL);
 const listBall = [startBall];
 
-let leftPlayerScore = 9;
+let leftPlayerScore = 0;
 let rightPlayerScore = 0;
 
 let key_pressed = "";
