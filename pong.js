@@ -1,72 +1,16 @@
-const canvas = document.getElementById("game-canvas");
-const ctx = canvas.getContext("2d");
-const newGameBtn = document.getElementsByClassName("new-game");
 document.addEventListener("keydown", keyDownHandler);
 document.addEventListener("keyup", keyUpHandler);
 document.getElementById("new-game").addEventListener("click", function () {
   reset();
 });
 
-const CENTER_X = canvas.width / 2;
-const CENTER_Y = canvas.height / 2;
-
-const DIFFICULTY = 50; // Lower is harder
-
-const PADDLE_WIDTH = 10;
-const PADDLE_HEIGHT = 60;
-const PADDLE_VEL = 7;
-const PADDLE_Y = CENTER_Y - PADDLE_HEIGHT / 2;
-
-const PADDLE_X_LEFT = 0;
-const PADDLE_X_RIGHT = canvas.width - PADDLE_WIDTH;
-const LEFT = "LEFT";
-const RIGHT = "RIGHT";
-
-const BALL_X = CENTER_X;
-const BALL_Y = CENTER_Y;
-const BALL_RADIUS = 10;
-const BALL_VEL = {
-  x: 5,
-  y: 5,
-};
-
-const leftPaddle = new paddle(
-  PADDLE_X_LEFT,
-  PADDLE_Y,
-  PADDLE_WIDTH,
-  PADDLE_HEIGHT,
-  PADDLE_VEL,
-  "PLAYER",
-  LEFT
-);
-const rightPaddle = new paddle(
-  PADDLE_X_RIGHT,
-  PADDLE_Y,
-  PADDLE_WIDTH,
-  PADDLE_HEIGHT,
-  PADDLE_VEL,
-  "AI",
-  RIGHT
-);
-const listPaddle = [leftPaddle, rightPaddle];
-
-const startBall = new ball(BALL_X, BALL_Y, BALL_RADIUS, BALL_VEL);
-const listBall = [startBall];
-
-let leftPlayerScore = 0;
-let rightPlayerScore = 0;
-
-let key_pressed = "";
-let gameRunning = false;
-let gameTime = 0;
-
 function keyDownHandler(e) {
   gameRunning = true;
-  if (e.key == "w" || e.key == "s") key_pressed = e.key;
+  if (e.key == "w" || e.key == "s") keyPressed = e.key;
 }
 
-function keyUpHandler() {
-  key_pressed = "";
+function keyUpHandler(e) {
+  if (e.key == "w" || e.key == "s") keyPressed = "";
 }
 
 function reset() {
@@ -81,7 +25,7 @@ function reset() {
   listBall.forEach((ball) => ball.reset());
   leftPlayerScore = 0;
   rightPlayerScore = 0;
-  key_pressed = "";
+  keyPressed = "";
   gameRunning = false;
   gameTime = 0;
 }
@@ -107,6 +51,47 @@ function update() {
   gameTime += 1;
 }
 
+function draw_score() {
+  if (leftPlayerScore < 10 && rightPlayerScore < 10) {
+    leftScoreArt = NUM_ART[leftPlayerScore];
+    rightScoreArt = NUM_ART[rightPlayerScore];
+    draw_art(leftScoreArt, CENTER_X - 80, 20);
+    draw_art(rightScoreArt, CENTER_X + 50, 20);
+  }
+  else if (leftPlayerScore == 10){
+    rightScoreArt = NUM_ART[rightPlayerScore];
+    draw_art(rightScoreArt, CENTER_X + 50, 20);
+    draw_art(ONE_ART, CENTER_X - 120, 20)
+    draw_art(ZERO_ART, CENTER_X - 80, 20)
+  }
+  else if (rightPlayerScore == 10){
+    leftScoreArt = NUM_ART[leftPlayerScore];
+    draw_art(leftScoreArt, CENTER_X - 80, 20);
+    draw_art(ONE_ART, CENTER_X + 50, 20)
+    draw_art(ZERO_ART, CENTER_X + 90, 20)
+  }
+}
+
+function draw_art(art, x, y) {
+  if (art.pattern != NaN) {
+    ctx.fillStyle = COLORS[art.pattern.color];
+    for (let i = 0; i < art.pattern.repeat_num; i++) {
+      ctx.fillRect(
+        x + art.pattern.x_interval * i,
+        y + art.pattern.y_interval * i,
+        art.pattern.width,
+        art.pattern.height
+      );
+    }
+  }
+  for (let i = 0; i < art.layers.length; i++) {
+    layer = art.layers[i];
+    ctx.fillStyle = COLORS[layer.color];
+    ctx.fillRect(layer.x + x, layer.y + y, layer.width, layer.height);
+  }
+  ctx.fillStyle = "#FFF";
+}
+
 function draw() {
   ctx.fillStyle = "#FFF";
   ctx.strokeStyle = "#FFF";
@@ -115,15 +100,8 @@ function draw() {
 
   ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-  ctx.fillText(leftPlayerScore, CENTER_X - 50, 20);
-  ctx.fillText(rightPlayerScore, CENTER_X + 50, 20);
-
-  ctx.beginPath();
-  ctx.setLineDash([5, 5]);
-  ctx.moveTo(CENTER_X, 0);
-  ctx.lineTo(CENTER_X, canvas.height);
-  ctx.stroke();
-  ctx.closePath();
+  draw_score();
+  draw_art(DASHED_LINE_ART, CENTER_X - 1, 0);
 
   listPaddle.forEach((paddle) => paddle.draw());
   if (gameRunning) listBall.forEach((ball) => ball.draw());

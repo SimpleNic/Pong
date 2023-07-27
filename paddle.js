@@ -15,7 +15,7 @@ class paddle {
 
   update() {
     if (this.controller == "PLAYER") {
-      switch (key_pressed) {
+      switch (keyPressed) {
         case "w":
           this.vel = -PADDLE_VEL;
           break;
@@ -26,7 +26,7 @@ class paddle {
           this.vel = 0;
           break;
       }
-    } else if (this.controller == "AI" && listBall.length > 0) {
+    } else if (this.controller == "AI" && gameRunning) {
       if (gameTime % DIFFICULTY > DIFFICULTY / 2) {
         let closest = listBall[0];
         for (let i = 0; i < listBall.length; i++) {

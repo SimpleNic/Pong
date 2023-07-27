@@ -19,13 +19,17 @@ class ball {
   update() {
     this.Collision();
 
-    if (this.y < 0 || this.y > canvas.height - this.radius) {
+    if (this.y < this.radius || this.y > canvas.height - this.radius) {
       this.vel.y *= -1;
     }
 
     this.x += this.vel.x;
     this.y += this.vel.y;
 
+    this.Score();
+  }
+
+  Score() {
     if (this.x < 0) {
       rightPlayerScore += 1;
       listBall.length = 0;
@@ -51,6 +55,7 @@ class ball {
         paddleObj.y < this.y + this.radius + this.vel.x
       ) {
         this.vel.x *= -1;
+        this.vel.y += Math.floor(Math.random() * 4) - 2;
         break;
       }
     }
@@ -62,7 +67,7 @@ class ball {
     this.radius = BALL_RADIUS;
     this.vel = {
       x: BALL_VEL.x,
-      y: BALL_VEL.y,
+      y: Math.floor(Math.random() * 10) - 5,
     };
   }
 }
