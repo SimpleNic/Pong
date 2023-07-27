@@ -1,4 +1,4 @@
-# Pong-but-Better
+# Pong But Better
 This is the classic game Pong but with a twist. <br>
 As the game goes on the ball gets more erratic and the AI gets faster.
 ## Controls
