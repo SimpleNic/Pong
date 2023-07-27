@@ -55,7 +55,9 @@ class ball {
         paddleObj.y < this.y + this.radius + this.vel.x
       ) {
         this.vel.x *= -1;
-        this.vel.y += Math.floor(Math.random() * 4) - 2;
+        this.vel.y += Math.floor(
+          (Math.random() * difficulty) / 10 - difficulty / 20
+        );
         break;
       }
     }
@@ -67,7 +69,7 @@ class ball {
     this.radius = BALL_RADIUS;
     this.vel = {
       x: BALL_VEL.x,
-      y: Math.floor(Math.random() * 10) - 5,
+      y: Math.floor((Math.random() * difficulty) / 10 - difficulty / 20),
     };
   }
 }

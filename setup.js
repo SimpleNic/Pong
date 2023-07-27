@@ -5,8 +5,6 @@ const newGameBtn = document.getElementsByClassName("new-game");
 const CENTER_X = canvas.width / 2;
 const CENTER_Y = canvas.height / 2;
 
-const DIFFICULTY = 50; // Lower is harder
-
 const PADDLE_WIDTH = 10;
 const PADDLE_HEIGHT = 60;
 const PADDLE_VEL = 5;
@@ -23,19 +21,20 @@ const BALL_VEL = {
   y: Math.floor(Math.random() * 10) - 5,
 };
 
-let leftPlayerScore = 0;
-let rightPlayerScore = 0;
+var leftPlayerScore = 0;
+var rightPlayerScore = 0;
 
-let keyPressed = "";
-let gameRunning = false;
-let gameTime = 0;
+var keyPressed = "";
+var gameRunning = false;
+var difficulty = 0;
+var startTime = 0;
+var runTime = 0;
 
 const leftPaddle = new paddle(
   PADDLE_X_LEFT,
   PADDLE_Y,
   PADDLE_WIDTH,
   PADDLE_HEIGHT,
-  PADDLE_VEL,
   "PLAYER",
   "LEFT"
 );
@@ -44,7 +43,6 @@ const rightPaddle = new paddle(
   PADDLE_Y,
   PADDLE_WIDTH,
   PADDLE_HEIGHT,
-  PADDLE_VEL,
   "AI",
   "RIGHT"
 );
@@ -225,7 +223,6 @@ const EIGHT_ART = {
     { color: "white", x: 0, y: 40, width: 30, height: 5 },
     { color: "white", x: 25, y: 5, width: 5, height: 35 },
     { color: "white", x: 5, y: 20, width: 20, height: 5 },
-    
   ],
 };
 

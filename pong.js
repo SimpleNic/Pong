@@ -5,7 +5,10 @@ document.getElementById("new-game").addEventListener("click", function () {
 });
 
 function keyDownHandler(e) {
-  gameRunning = true;
+  if (!gameRunning) {
+    gameRunning = true;
+    startTime = Math.floor(Date.now() / 1000);
+  }
   if (e.key == "w" || e.key == "s") keyPressed = e.key;
 }
 
@@ -27,7 +30,18 @@ function reset() {
   rightPlayerScore = 0;
   keyPressed = "";
   gameRunning = false;
-  gameTime = 0;
+  difficulty = 0;
+}
+
+function update() {
+  if (leftPlayerScore == 10 || rightPlayerScore == 10) {
+    gameRunning = false;
+    return;
+  }
+  runTime = Math.floor(Date.now() / 1000) - startTime;
+  if (difficulty <= 100) difficulty = runTime + 20;
+  listPaddle.forEach((paddle) => paddle.update());
+  listBall.forEach((ball) => ball.update());
 }
 
 function winDraw() {
@@ -41,48 +55,34 @@ function winDraw() {
   ctx.fillText(winText, CENTER_X, CENTER_Y);
 }
 
-function update() {
-  if (leftPlayerScore == 10 || rightPlayerScore == 10) {
-    gameRunning = false;
-    return;
-  }
-  listPaddle.forEach((paddle) => paddle.update());
-  listBall.forEach((ball) => ball.update());
-  gameTime += 1;
-}
-
 function draw_score() {
   if (leftPlayerScore < 10 && rightPlayerScore < 10) {
     leftScoreArt = NUM_ART[leftPlayerScore];
     rightScoreArt = NUM_ART[rightPlayerScore];
     draw_art(leftScoreArt, CENTER_X - 80, 20);
     draw_art(rightScoreArt, CENTER_X + 50, 20);
-  }
-  else if (leftPlayerScore == 10){
+  } else if (leftPlayerScore == 10) {
     rightScoreArt = NUM_ART[rightPlayerScore];
     draw_art(rightScoreArt, CENTER_X + 50, 20);
-    draw_art(ONE_ART, CENTER_X - 120, 20)
-    draw_art(ZERO_ART, CENTER_X - 80, 20)
-  }
-  else if (rightPlayerScore == 10){
+    draw_art(ONE_ART, CENTER_X - 120, 20);
+    draw_art(ZERO_ART, CENTER_X - 80, 20);
+  } else if (rightPlayerScore == 10) {
     leftScoreArt = NUM_ART[leftPlayerScore];
     draw_art(leftScoreArt, CENTER_X - 80, 20);
-    draw_art(ONE_ART, CENTER_X + 50, 20)
-    draw_art(ZERO_ART, CENTER_X + 90, 20)
+    draw_art(ONE_ART, CENTER_X + 50, 20);
+    draw_art(ZERO_ART, CENTER_X + 90, 20);
   }
 }
 
 function draw_art(art, x, y) {
-  if (art.pattern != NaN) {
-    ctx.fillStyle = COLORS[art.pattern.color];
-    for (let i = 0; i < art.pattern.repeat_num; i++) {
-      ctx.fillRect(
-        x + art.pattern.x_interval * i,
-        y + art.pattern.y_interval * i,
-        art.pattern.width,
-        art.pattern.height
-      );
-    }
+  ctx.fillStyle = COLORS[art.pattern.color];
+  for (let i = 0; i < art.pattern.repeat_num; i++) {
+    ctx.fillRect(
+      x + art.pattern.x_interval * i,
+      y + art.pattern.y_interval * i,
+      art.pattern.width,
+      art.pattern.height
+    );
   }
   for (let i = 0; i < art.layers.length; i++) {
     layer = art.layers[i];

@@ -1,10 +1,10 @@
 class paddle {
-  constructor(x, y, w, h, vel, controller, side) {
+  constructor(x, y, w, h, controller, side) {
     this.x = x;
     this.y = y;
     this.width = w;
     this.height = h;
-    this.vel = vel;
+    this.vel = 0;
     this.controller = controller;
     this.side = side;
   }
@@ -27,18 +27,18 @@ class paddle {
           break;
       }
     } else if (this.controller == "AI" && gameRunning) {
-      if (gameTime % DIFFICULTY > DIFFICULTY / 2) {
-        let closest = listBall[0];
-        for (let i = 0; i < listBall.length; i++) {
-          let ballObj = listBall[i];
-
-          if (this.side == "LEFT" && closest.x > ballObj.x) closest = ballObj;
-          else if (this.side == "RIGHT" && closest.x < ballObj.x)
-            closest = ballObj;
-        }
-        if (closest.y > this.y + this.height / 2) this.vel = PADDLE_VEL;
-        else if (closest.y < this.y + this.height / 2) this.vel = -PADDLE_VEL;
-      } else this.vel *= 0.3;
+      let closest = listBall[0];
+      for (let i = 0; i < listBall.length; i++) {
+        let ballObj = listBall[i];
+        if (this.side == "LEFT" && closest.x > ballObj.x) closest = ballObj;
+        else if (this.side == "RIGHT" && closest.x < ballObj.x)
+          closest = ballObj;
+      }
+      let aiSpeed = Math.floor((difficulty / 100) * PADDLE_VEL);
+      if (closest.y < this.y) this.vel = -aiSpeed;
+      else if (closest.y > this.y + this.height) this.vel = aiSpeed;
+      else if (closest.vel.y < aiSpeed && closest.vel.y > -aiSpeed)
+        this.vel = closest.vel.y;
     }
 
     this.y += this.vel;
@@ -56,6 +56,6 @@ class paddle {
     this.y = PADDLE_Y;
     this.width = PADDLE_WIDTH;
     this.height = PADDLE_HEIGHT;
-    this.vel = PADDLE_VEL;
+    this.vel = 0;
   }
 }
