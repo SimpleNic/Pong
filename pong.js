@@ -107,7 +107,8 @@ function draw() {
   if (gameRunning) listBall.forEach((ball) => ball.draw());
   else if (leftPlayerScore != 10 && rightPlayerScore != 10) {
     ctx.font = "32px Arial";
-    ctx.fillText("Press any key to start", CENTER_X, CENTER_Y);
+    ctx.fillText("Use 'w' and 's' to go up and down", CENTER_X, CENTER_Y-32);
+    ctx.fillText("Press any key to start", CENTER_X, CENTER_Y+32);
   }
   winDraw();
 }
